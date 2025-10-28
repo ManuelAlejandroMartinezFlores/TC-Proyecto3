@@ -1,0 +1,118 @@
+states: [q0, q1, q2, q3, q4, qf]
+input_alphabet: [a, b]
+tape_alphabet: [a, b, X, Y, B]
+initial_state: q0
+accept_states: [qf]
+
+# Algorithm: Accept a^n b^n
+# Mark one 'a' with X, find matching 'b' and mark with Y, repeat
+# When no more a's, verify no unmarked b's remain
+
+transitions:
+  # State q0: Look for first unmarked 'a'
+  - state: q0
+    read: X
+    write: X
+    move: R
+    next: q0
+  
+  - state: q0
+    read: a
+    write: X
+    move: R
+    next: q1
+  
+  # No more a's, check if we're done
+  - state: q0
+    read: Y
+    write: Y
+    move: R
+    next: q3
+  
+  - state: q0
+    read: B
+    write: B
+    move: R
+    next: qf
+  
+  # State q1: Find matching 'b' for the 'a' we just marked
+  - state: q1
+    read: a
+    write: a
+    move: R
+    next: q1
+  
+  - state: q1
+    read: Y
+    write: Y
+    move: R
+    next: q1
+  
+  - state: q1
+    read: b
+    write: Y
+    move: L
+    next: q2
+  
+  # State q2: Go back to start to find next 'a'
+  - state: q2
+    read: a
+    write: a
+    move: L
+    next: q2
+  
+  - state: q2
+    read: Y
+    write: Y
+    move: L
+    next: q2
+  
+  - state: q2
+    read: X
+    write: X
+    move: R
+    next: q0
+  
+  - state: q2
+    read: B
+    write: B
+    move: R
+    next: q0
+  
+  # State q3: No more a's, verify no unmarked b's
+  - state: q3
+    read: Y
+    write: Y
+    move: R
+    next: q3
+  
+  - state: q3
+    read: B
+    write: B
+    move: R
+    next: qf
+  
+  # State q4: Move to start for final verification
+  - state: q4
+    read: [X, Y]
+    write: [X, Y]
+    move: L
+    next: q4
+  
+  - state: q4
+    read: B
+    write: B
+    move: R
+    next: qf
+
+inputs:
+  - ""
+  - "ab"
+  - "aabb"
+  - "aaabbb"
+  - "aaaabbbb"
+  - "a"
+  - "b"
+  - "aab"
+  - "abb"
+  - "ba"

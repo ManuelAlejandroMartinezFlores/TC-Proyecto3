@@ -1,0 +1,43 @@
+states: [q0, q1, qf]
+input_alphabet: [A, D, C]
+tape_alphabet: [A, D, C, a, d, c, B]
+initial_state: q0
+accept_states: [qf]
+
+# Algorithm: Convert uppercase letters to lowercase
+# Scan right, converting each uppercase to lowercase, then accept
+
+transitions:
+  # Convert A to a
+  - state: q0
+    read: A
+    write: a
+    move: R
+    next: q0
+  
+  # Convert D to d
+  - state: q0
+    read: D
+    write: d
+    move: R
+    next: q0
+  
+  # Convert C to c
+  - state: q0
+    read: C
+    write: c
+    move: R
+    next: q0
+  
+  # When we hit blank (end of input), accept
+  - state: q0
+    read: B
+    write: B
+    move: L
+    next: qf
+
+inputs:
+  - "ADCAA"
+  - "DCCAC"
+  - "ACCCC"
+  - "ADCADC"
