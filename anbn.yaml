@@ -106,13 +106,7 @@ transitions:
     next: qf
 
 inputs:
-  - ""
-  - "ab"
-  - "aabb"
+  - "aaaab"
+  - "ababab"
   - "aaabbb"
   - "aaaabbbb"
-  - "a"
-  - "b"
-  - "aab"
-  - "abb"
-  - "ba"

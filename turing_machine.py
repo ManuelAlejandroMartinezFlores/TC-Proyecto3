@@ -34,7 +34,7 @@ class TuringMachine:
             for read_sym, write_sym in zip(read_symbols, write_symbols):
                 self.transitions[(state, read_sym)] = (next_state, write_sym, move)
     
-    def run(self, input_string: str, max_steps: int = 10000, verbose: bool = True) -> bool:
+    def run(self, input_string: str, max_steps: int = 100, verbose: bool = True) -> bool:
         """
         Run the Turing Machine on the given input string.
         
@@ -155,5 +155,8 @@ if __name__ == "__main__":
     tm = TuringMachine('anbn.yaml')
     
     # Run all inputs from config
+    tm.run_all_inputs(verbose=True)
+    print('='*60+'\n')
+    tm = TuringMachine('lower.yaml')
     tm.run_all_inputs(verbose=True)
     
