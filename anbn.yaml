@@ -1,112 +1,112 @@
-states: [q0, q1, q2, q3, q4, qf]
+states: [q0, q1, q2, q3, qf]
 input_alphabet: [a, b]
-tape_alphabet: [a, b, X, Y, B]
+tape_alphabet: [a, b, X, Y, B, '$']
+cache_alphabet: [B]
 initial_state: q0
+initial_cache: B
 accept_states: [qf]
 
-# Algorithm: Accept a^n b^n
-# Mark one 'a' with X, find matching 'b' and mark with Y, repeat
-# When no more a's, verify no unmarked b's remain
+# Accept a^n b^n (equal number of a's followed by b's)
+# Algorithm:
+# 1. Mark leftmost 'a' with X
+# 2. Find leftmost 'b' and mark with Y
+# 3. Go back to start
+# 4. Repeat until all marked
+# 5. Verify and accept
 
 transitions:
-  # State q0: Look for first unmarked 'a'
+  # q0: Find leftmost unmarked 'a'
   - state: q0
-    read: X
-    write: X
+    read: ['$', B]
+    write: ['$', B]
     move: R
     next: q0
   
   - state: q0
-    read: a
-    write: X
+    read: [X, B]
+    write: [X, B]
+    move: R
+    next: q0
+  
+  - state: q0
+    read: [a, B]
+    write: [X, B]
     move: R
     next: q1
   
-  # No more a's, check if we're done
+  # Only Y's left, verify
   - state: q0
-    read: Y
-    write: Y
+    read: [Y, B]
+    write: [Y, B]
     move: R
     next: q3
   
+  # Empty string
   - state: q0
-    read: B
-    write: B
+    read: [B, B]
+    write: [B, B]
     move: R
     next: qf
   
-  # State q1: Find matching 'b' for the 'a' we just marked
+  # q1: Find leftmost unmarked 'b'
   - state: q1
-    read: a
-    write: a
+    read: [a, B]
+    write: [a, B]
     move: R
     next: q1
   
   - state: q1
-    read: Y
-    write: Y
+    read: [Y, B]
+    write: [Y, B]
     move: R
     next: q1
   
   - state: q1
-    read: b
-    write: Y
+    read: [b, B]
+    write: [Y, B]
     move: L
     next: q2
   
-  # State q2: Go back to start to find next 'a'
+  # q2: Go back to start
   - state: q2
-    read: a
-    write: a
-    move: L
-    next: q2
-  
-  - state: q2
-    read: Y
-    write: Y
+    read: [a, B]
+    write: [a, B]
     move: L
     next: q2
   
   - state: q2
-    read: X
-    write: X
+    read: [Y, B]
+    write: [Y, B]
+    move: L
+    next: q2
+  
+  - state: q2
+    read: [X, B]
+    write: [X, B]
+    move: L
+    next: q2
+  
+  - state: q2
+    read: ['$', B]
+    write: ['$', B]
     move: R
     next: q0
   
-  - state: q2
-    read: B
-    write: B
-    move: R
-    next: q0
-  
-  # State q3: No more a's, verify no unmarked b's
+  # q3: Verify only Y's and B remain
   - state: q3
-    read: Y
-    write: Y
+    read: [Y, B]
+    write: [Y, B]
     move: R
     next: q3
   
   - state: q3
-    read: B
-    write: B
-    move: R
-    next: qf
-  
-  # State q4: Move to start for final verification
-  - state: q4
-    read: [X, Y]
-    write: [X, Y]
-    move: L
-    next: q4
-  
-  - state: q4
-    read: B
-    write: B
+    read: [B, B]
+    write: [B, B]
     move: R
     next: qf
 
 inputs:
-  - "aaaab"
-  - "ababab"
   - "aaabbb"
   - "aaaabbbb"
+  - "aaaabb"
+  - "ababab"

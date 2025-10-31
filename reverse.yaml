@@ -1,0 +1,224 @@
+states: [q0, q1, q2, q3, q4, q5]
+input_alphabet: [a, b]
+tape_alphabet: [a, b, X, B, '$', '#']
+cache_alphabet: [B, a, b]
+initial_state: q0
+initial_cache: B
+accept_states: [q5]
+
+# String reversal algorithm as specified
+
+transitions:
+  # q0: Move to end of string
+  - state: q0
+    read: [a, B]
+    write: [a, B]
+    move: R
+    next: q0
+  
+  - state: q0
+    read: [b, B]
+    write: [b, B]
+    move: R
+    next: q0
+  
+  # Found blank - add # and move left to q1
+  - state: q0
+    read: [B, B]
+    write: ['#', B]
+    move: L
+    next: q1
+  
+  # q1: Find last non-X character, cache it, replace with X, move right to q2
+  - state: q1
+    read: [X, B]
+    write: [X, B]
+    move: L
+    next: q1
+  
+  - state: q1
+    read: [a, B]
+    write: [X, a]
+    move: R
+    next: q2
+  
+  - state: q1
+    read: [b, B]
+    write: [X, b]
+    move: R
+    next: q2
+  
+  # Only X's left - go to cleanup q4
+  - state: q1
+    read: ['$', B]
+    write: ['$', B]
+    move: R
+    next: q4
+  
+  # q2: Move right to end (past #)
+  - state: q2
+    read: [X, a]
+    write: [X, a]
+    move: R
+    next: q2
+  
+  - state: q2
+    read: [a, a]
+    write: [a, a]
+    move: R
+    next: q2
+  
+  - state: q2
+    read: [b, a]
+    write: [b, a]
+    move: R
+    next: q2
+  
+  - state: q2
+    read: [X, b]
+    write: [X, b]
+    move: R
+    next: q2
+  
+  - state: q2
+    read: [a, b]
+    write: [a, b]
+    move: R
+    next: q2
+  
+  - state: q2
+    read: [b, b]
+    write: [b, b]
+    move: R
+    next: q2
+  
+  - state: q2
+    read: ['#', a]
+    write: ['#', a]
+    move: R
+    next: q2
+  
+  - state: q2
+    read: ['#', b]
+    write: ['#', b]
+    move: R
+    next: q2
+  
+  # Found blank - write cached character, move left to q3
+  - state: q2
+    read: [B, a]
+    write: [a, B]
+    move: L
+    next: q3
+  
+  - state: q2
+    read: [B, b]
+    write: [b, B]
+    move: L
+    next: q3
+  
+  # q3: Move left until #, then move left to q1
+  - state: q3
+    read: [a, B]
+    write: [a, B]
+    move: L
+    next: q3
+  
+  - state: q3
+    read: [b, B]
+    write: [b, B]
+    move: L
+    next: q3
+  
+  - state: q3
+    read: [a, a]
+    write: [a, a]
+    move: L
+    next: q3
+  
+  - state: q3
+    read: [b, a]
+    write: [b, a]
+    move: L
+    next: q3
+  
+  - state: q3
+    read: [a, b]
+    write: [a, b]
+    move: L
+    next: q3
+  
+  - state: q3
+    read: [b, b]
+    write: [b, b]
+    move: L
+    next: q3
+  
+  # Found # - move left to q1
+  - state: q3
+    read: ['#', B]
+    write: ['#', B]
+    move: L
+    next: q1
+  
+  - state: q3
+    read: ['#', a]
+    write: ['#', a]
+    move: L
+    next: q1
+  
+  - state: q3
+    read: ['#', b]
+    write: ['#', b]
+    move: L
+    next: q1
+  
+  # q4: Replace X's with blanks from left to right
+  - state: q4
+    read: ['$', B]
+    write: [B, B]
+    move: R
+    next: q4
+  
+  - state: q4
+    read: [X, B]
+    write: [B, B]
+    move: R
+    next: q4
+  
+  - state: q4
+    read: [X, a]
+    write: [B, B]
+    move: R
+    next: q4
+  
+  - state: q4
+    read: [X, b]
+    write: [B, B]
+    move: R
+    next: q4
+  
+  # Found # - replace with blank and move to q5
+  - state: q4
+    read: ['#', B]
+    write: [B, B]
+    move: R
+    next: q5
+  
+  - state: q4
+    read: ['#', a]
+    write: [B, B]
+    move: R
+    next: q5
+  
+  - state: q4
+    read: ['#', b]
+    write: [B, B]
+    move: R
+    next: q5
+
+inputs:
+  - "aaabb"
+  - "aabbb"
+  - "ababa"
+  - "bbbba"
